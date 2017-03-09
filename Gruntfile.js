@@ -18,6 +18,15 @@ module.exports = function( grunt ) {
 
     jekyllConfig: grunt.file.readYAML('_config.yml'),
 
+    react: {
+      src: {
+        js: 'src/_assets/javascripts'
+      },
+      assets: {
+        js: 'public/_assets/js/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css'
+      }
+    },
+
     project: {
       src: {
         css: 'src/_assets/css',
@@ -44,7 +53,7 @@ module.exports = function( grunt ) {
     copy: {
       font: {
         src: 'fonts/*',
-        dest: 'assets',
+        dest: 'public/_assets/',
         expand: true,
         cwd: 'node_modules/font-awesome'
       },
@@ -92,7 +101,7 @@ module.exports = function( grunt ) {
           report: 'min'
         },
         files: {
-          '<%= project.assets.css %>': [ '_site/index.html', '_site/about/index.html' ]
+          '<%= project.assets.css %>': [ 'index.html', 'about/index.html' ]
         }
       }
     },
@@ -103,7 +112,8 @@ module.exports = function( grunt ) {
       },
       dist: {
         files: {
-          '<%= project.assets.js %>': '<%= project.assets.js %>'
+          '<%= project.assets.js %>': '<%= project.assets.js %>',
+	  '<%= react.assets.js %>' : '<%= project.assets.js %>'
         }
       }
     },
