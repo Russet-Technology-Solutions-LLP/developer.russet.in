@@ -30,14 +30,22 @@ module.exports = function(grunt) {
         // Meta data of the project.
         meta: {
             // Banner will be prepended before every javascript and css file.
+            /*
             banner: '/*!\n' +
                 ' * <%= pkg.name %>-v<%= pkg.version %> - <%= grunt.template.today("dd-mm-yyy") %>\n' +
                 ' * <%= pkg.description %>' +
                 ' * Auther: <%= pkg.author %>\n' +
                 ' * Company: <%= pkg.company %>\n' +
                 ' * Copyright: <%= pkg.copyright %>.\n' +
-                ' * License(doc): <%= pkg.doc-licence %>\n' +
+                ' * License: <%= pkg.licence %>\n' +
                 ' * License(code): <%= pkg.code-license %>' +
+                ' *///\n'
+            banner: '/*!\n' +
+                ' * <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n' +
+                ' * <%= pkg.author %>\n' +
+                ' * <%= pkg.description %>\n' +
+                ' * <%= pkg.url %>\n' +
+                ' * Copyright <%= pkg.copyright %>. <%= pkg.license %> licensed.\n' +
                 ' */\n'
         },
         
@@ -48,6 +56,26 @@ module.exports = function(grunt) {
         },
         less: {
             // less task configuration goes here. i.e compiling less files to css files.
+            build: {
+                options: {
+                    strictMath: true,
+                    sourceMap: true,
+                    outputSourceFiles: true,
+                    sourceMapURL: '<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css.map',
+                    sourceMapFilename: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css.map'
+                },
+                src: '<%= project.src.css %>/site.less',
+                dest: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css'
+            },
+            release: {
+                src: ['<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css'],
+                dest: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css',
+                options: {
+                    banner: '<%= meta.banner %>',
+                    cleancss: true,
+                    compress: true
+                }
+            }
         },
         concat: {
             // concat task configuration goes here. i.e concatening javascript files.
@@ -92,5 +120,5 @@ module.exports = function(grunt) {
     // Register tasks.
 
     // Default tasks.
-    grunt.registerTask( 'default', [ 'clean', 'copy' ] );
+    grunt.registerTask( 'default', [ 'clean', 'copy', 'less:build', 'less:release' ] );
 }
