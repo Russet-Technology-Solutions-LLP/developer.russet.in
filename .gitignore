@@ -4,3 +4,4 @@ _site/
 .jshintrc
 public
 node_modules
+src/_assets/bundle.js

@@ -1,195 +1,90 @@
-module.exports = function( grunt ) {
-  'use strict';
+module.exports = function(grunt) {
+    
+    // Project configuration
+    grunt.initConfig({
+        // Reading package configurations
+        pkg: grunt.file.readJSON('package.json'),
 
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-less');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-uncss');
+        // Reading Jekyll configurations.
+        jekyllConfig: grunt.file.readYAML('_config.yml'),
 
-  var config;
-
-  config = {
-
-    pkg: grunt.file.readJSON('package.json'),
-
-    jekyllConfig: grunt.file.readYAML('_config.yml'),
-
-    react: {
-      src: {
-        js: 'src/_assets/javascripts'
-      },
-      assets: {
-        js: 'public/_assets/js/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css'
-      }
-    },
-
-    project: {
-      src: {
-        css: 'src/_assets/css',
-        js: 'src/_assets/js'
-      },
-      assets: {
-        css: 'public/_assets/css/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css',
-        js: 'public/_assets/js/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.js'
-      }
-    },
-
-    meta: {
-      banner: '/*!\n' +
-          ' * <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n' +
-          ' * <%= pkg.author %>\n' +
-          ' * <%= pkg.description %>\n' +
-          ' * <%= pkg.url %>\n' +
-          ' * Copyright <%= pkg.copyright %>. <%= pkg.license %> licensed.\n' +
-          ' */\n'
-    },
-
-    clean: [ 'assets' ],
-
-    copy: {
-      font: {
-        src: 'fonts/*',
-        dest: 'public/_assets/',
-        expand: true,
-        cwd: 'node_modules/font-awesome'
-      },
-      images: {
-        src: 'images/**/*',
-        dest: 'assets',
-        expand: true,
-        cwd: 'src'
-      }
-    },
-
-    jshint: {
-      files: [ '<%= project.src.js %>/*.js', '!<%= project.src.js %>/linkedin.js' ],
-      options: {
-        jshintrc: '.jshintrc'
-      }
-    },
-
-    less: {
-      build: {
-        src: '<%= project.src.css %>/site.less',
-        dest: '<%= project.assets.css %>'
-      },
-      dist: {
-        src: [ '<%= project.assets.css %>' ],
-        dest: '<%= project.assets.css %>',
-        options: {
-          banner: '<%= meta.banner %>',
-          cleancss: true,
-          compress: true
-        }
-      }
-    },
-
-    /*
-      ignore: do not remove code block highlight sytlesheet
-    */
-    uncss: {
-      dist: {
-        options: {
-          ignore: [ 'pre', 'code', 'pre code', /\.highlight(\s\.\w{1,3}(\s\.\w)?)?/, '.post img', '.post .post-footer', '.post h4', 'aside section ul li span.disqus-author', '.post-share .share-title', '.post-share .share-social-medias', '.post-share .share-social-medias .twitter-social-media', '.post-share .share-social-medias .facebook-social-media', '.post-share .share-social-medias .google-plus-social-media', '.post-share .share-social-medias .linkedin-social-media' ],
-          media: [ '(min-width: 768px)', '(min-width: 992px)', '(min-width: 1200px)' ],
-          stylesheets: [ '<%= project.assets.css %>' ],
-          ignoreSheets: [ /fonts.googleapis/ ],
-          report: 'min'
-        },
-        files: {
-          '<%= project.assets.css %>': [ 'index.html', 'about/index.html' ]
-        }
-      }
-    },
-
-    uglify: {
-      options: {
-        banner: "<%= meta.banner %>"
-      },
-      dist: {
-        files: {
-          '<%= project.assets.js %>': '<%= project.assets.js %>',
-	  '<%= react.assets.js %>' : '<%= project.assets.js %>'
-        }
-      }
-    },
-
-    delta: {
-      jshint: {
-        files: [ '<%= project.src.js %>/**/*.js' ],
-        tasks: [ 'jshint', 'copy:js' ]
-      },
-      less: {
-        files: [ '<%= project.src.css %>/**/*.less' ],
-        tasks: [ 'less:build' ]
-      }
-    }
-  };
-
-  grunt.initConfig( config );
-
-  grunt.renameTask( 'watch', 'delta' );
-  grunt.registerTask( 'watch', [ 'build', 'delta' ] );
-  grunt.registerTask( 'build', [ 'clean', 'jshint', 'copy', 'concatScripts', 'less:build' ] );
-  grunt.registerTask( 'dist', [ 'uncss', 'less:dist', 'uglify' ] );
-  grunt.registerTask( 'default', [ 'build', 'dist' ] );
-
-  grunt.registerTask( 'concatScripts', 'concat scripts based on jekyll configuration file _config.yml', function() {
-
-    // concat task provides a process function to load dynamic scripts parameters
-    var concat = {
-        js: {
-          dest: '<%= project.assets.js %>',
-          options: {
-            process: function( content, srcPath ) {
-              return grunt.template.process( content );
+        // Project configurations
+        project: {
+            // projects assets source.
+            src: {
+                css: 'src/_assets/css',
+                js: 'src/_assets/js',
+                images: 'src/_assets/images',
+                fonts: 'src/_assets/fonts'
+            },
+            // projects assets destination.
+            dest: {
+                css: 'public/_assets/css',
+                js: 'public/_assets/js',
+                images: 'public/_assets/images',
+                fonts: 'public/_assets/fonts',
+                assets: 'public/_assets'
             }
-          }
-        }
-      },
-      jekyllConfig = grunt.config.get('jekyllConfig'),
-      scriptSrc = [];
+        },
 
-    scriptSrc.push('<%= project.src.js %>/module.prefix');
+        // Meta data of the project.
+        meta: {
+            // Banner will be prepended before every javascript and css file.
+            banner: '/*!\n' +
+                ' * <%= pkg.name %>-v<%= pkg.version %> - <%= grunt.template.today("dd-mm-yyy") %>\n' +
+                ' * <%= pkg.description %>' +
+                ' * Auther: <%= pkg.author %>\n' +
+                ' * Company: <%= pkg.company %>\n' +
+                ' * Copyright: <%= pkg.copyright %>.\n' +
+                ' * License(doc): <%= pkg.doc-licence %>\n' +
+                ' * License(code): <%= pkg.code-license %>' +
+                ' */\n'
+        },
+        
+        // Tasks
+        clean: {
+            // clean task configuration goes here.
+            dist: 'public/_assets'
+        },
+        less: {
+            // less task configuration goes here. i.e compiling less files to css files.
+        },
+        concat: {
+            // concat task configuration goes here. i.e concatening javascript files.
+        },
+        cssmin: {
+            // cssmin task goes here. i.e minifising css files.
+        },
+        uglify: {
+            // uglify task goes here. i.e minifising javascript files.
+            options: {
+                mangle: false
+            },
+        },
+        copy: {
+            // copy task goes here. i.e copies files and folders.
+            fonts: {
+                files: [
+                    // include files from font-awesome folder.
+                    {expand: true, cwd: 'node_modules/font-awesome', src: ['fonts/*'], dest: '<%= project.dest.assets %>/'},
 
-    scriptSrc.push('<%= project.src.js %>/github.js');
+                    // include files from src
+                    {expand: true, cwd: '<%= project.src.fonts %>', src: ['**'], dest: '<%= project.dest.fonts %>/'},
+                ],
+            },
+        },
+    });
 
-    // only put scripts that will be used
+    // Load the used plugins.
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-less');
+    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    
+    // Register tasks.
 
-    if ( jekyllConfig.share.twitter ) {
-      scriptSrc.push('<%= project.src.js %>/twitter.js');
-    }
-
-    if ( jekyllConfig.share.facebook ) {
-      scriptSrc.push('<%= project.src.js %>/facebook.js');
-    }
-
-    if ( jekyllConfig.share.google_plus ) {
-      scriptSrc.push('<%= project.src.js %>/google-plus.js');
-    }
-
-    if ( jekyllConfig.share.disqus ) {
-      scriptSrc.push('<%= project.src.js %>/disqus.js');
-    }
-
-    scriptSrc.push('<%= project.src.js %>/module.suffix');
-
-    // explicitly put the linkedIn code out of the immediate function to work
-    if ( jekyllConfig.share.linkedin ) {
-      scriptSrc.push('<%= project.src.js %>/linkedin.js');
-    }
-
-    // set source
-    concat.js.src = scriptSrc;
-
-    // set a new task configuration
-    grunt.config.set( 'concat', concat );
-
-    // execute task
-    grunt.task.run('concat');
-  });
-};
+    // Default tasks.
+    grunt.registerTask( 'default', [ 'copy' ] );
+}
