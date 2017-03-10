@@ -44,7 +44,7 @@ module.exports = function(grunt) {
         // Tasks
         clean: {
             // clean task configuration goes here.
-            dist: 'public/_assets'
+            build: ["<%= project.dest.assets %>/*"],
         },
         less: {
             // less task configuration goes here. i.e compiling less files to css files.
@@ -72,6 +72,12 @@ module.exports = function(grunt) {
                     {expand: true, cwd: '<%= project.src.fonts %>', src: ['**'], dest: '<%= project.dest.fonts %>/'},
                 ],
             },
+            images: {
+                files: [
+                    // copy images.
+                    {expand: true, cwd: '<%= project.src.images %>', src:['**/*'], dest: '<%= project.dest.images %>/'}
+                ],
+            },
         },
     });
 
@@ -86,5 +92,5 @@ module.exports = function(grunt) {
     // Register tasks.
 
     // Default tasks.
-    grunt.registerTask( 'default', [ 'copy' ] );
+    grunt.registerTask( 'default', [ 'clean', 'copy' ] );
 }
