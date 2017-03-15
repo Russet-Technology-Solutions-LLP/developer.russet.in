@@ -1,5 +1,25 @@
+/*!
+* Russet-docs Gruntfile
+* http://developer.russet.in
+* Copyright 2016-2017 Russet Technology Solutions LLP.
+* Author: Sandeep Sihari
+* Licenced under MIT
+*/
+
 module.exports = function(grunt) {
+    'use strict';
+
+    // Force use of Unix newlines
+    grunt.util.linefeed = '\n';
+
+    RegExp.quote = function (string) {
+        return string.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
+    };
+
+    var path = require('path');
     
+    var configBridge = grunt.file.readJSON('./grunt/configBridge.json', { encoding: 'utf8' });
+
     // Project configuration
     grunt.initConfig({
         // Reading package configurations
@@ -46,8 +66,11 @@ module.exports = function(grunt) {
                 ' * <%= pkg.description %>\n' +
                 ' * <%= pkg.url %>\n' +
                 ' * Copyright <%= pkg.copyright %>. <%= pkg.license %> licensed.\n' +
-                ' */\n'
+                ' */\n',
         },
+
+        rjqueryCheck: configBridge.config.jqueryCheck.join('\n'),
+        jqueryVersionCheck: configBridge.config.jqueryVersionCheck.join('\n'),
         
         // Tasks
         clean: {
@@ -79,6 +102,10 @@ module.exports = function(grunt) {
         },
         concat: {
             // concat task configuration goes here. i.e concatening javascript files.
+            options: {
+                banner: '<%= meta.banner %>\n<%= jqueryCheck %>\n<%= jqueryVersionCheck %>',
+                stripBanners: false
+            },
         },
         cssmin: {
             // cssmin task goes here. i.e minifising css files.
