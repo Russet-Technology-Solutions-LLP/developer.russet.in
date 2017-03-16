@@ -167,6 +167,7 @@ module.exports = function(grunt) {
             release: {
                 src: [
                     // css files for final release sources
+                    'src/assets/css/russetdocs.css'
                 ],
                 dest: '<%= project.dest.css %>/russetdocs.min.css'
             }
