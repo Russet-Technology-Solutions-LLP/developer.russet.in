@@ -1,5 +1,5 @@
 /*!
- * russet-doc - v1.0.0 - 2017-03-16
+ * russet-doc - v1.0.0 - 2017-03-17
  * Sandeep Sihari
  * Developer's encyclopedia.
  * http://developer.russet.in
