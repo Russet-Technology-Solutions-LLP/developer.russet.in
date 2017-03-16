@@ -69,7 +69,7 @@ module.exports = function(grunt) {
                 ' */\n',
         },
 
-        rjqueryCheck: configBridge.config.jqueryCheck.join('\n'),
+        jqueryCheck: configBridge.config.jqueryCheck.join('\n'),
         jqueryVersionCheck: configBridge.config.jqueryVersionCheck.join('\n'),
         
         // Tasks
@@ -77,9 +77,10 @@ module.exports = function(grunt) {
             // clean task configuration goes here.
             build: ["<%= project.dest.assets %>/*"],
         },
+
         less: {
             // less task configuration goes here. i.e compiling less files to css files.
-            build: {
+            compileCore: {
                 options: {
                     strictMath: true,
                     sourceMap: true,
@@ -87,9 +88,22 @@ module.exports = function(grunt) {
                     sourceMapURL: '<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css.map',
                     sourceMapFilename: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css.map'
                 },
-                src: '<%= project.src.css %>/site.less',
+                src: 'node_modules/bootstrap/less/bootstrap.less',
                 dest: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css'
             },
+            /**** Compile time error. resolve it later.
+            compileTheme: {
+                options: { 
+                    strictMath: true,
+                    sourceMap: true,
+                    outputSourceFiles: true,
+                    sourceMapURL: '<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>-theme.css.map',
+                    sourceMapFilename: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfi    g.version %>-theme.css.map'
+                },
+                src: 'node_modules/bootstrap/less/theme.less',
+                dest: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>-theme.css'
+            },
+            */
             release: {
                 src: ['<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css'],
                 dest: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css',
@@ -100,22 +114,76 @@ module.exports = function(grunt) {
                 }
             }
         },
+
         concat: {
             // concat task configuration goes here. i.e concatening javascript files.
             options: {
                 banner: '<%= meta.banner %>\n<%= jqueryCheck %>\n<%= jqueryVersionCheck %>',
                 stripBanners: false
             },
+            build: {
+                src: [
+                    // bootstrap javascript source files.
+                    'node_modules/bootstrap/js/transition.js',
+                    'node_modules/bootstrap/js/alert.js',
+                    'node_modules/bootstrap/js/button.js',
+                    'node_modules/bootstrap/js/carousel.js',
+                    'node_modules/bootstrap/js/collapse.js',
+                    'node_modules/bootstrap/js/dropdown.js',
+                    'node_modules/bootstrap/js/modal.js',
+                    'node_modules/bootstrap/js/tooltip.js',
+                    'node_modules/bootstrap/js/popover.js',
+                    'node_modules/bootstrap/js/scrollspy.js',
+                    'node_modules/bootstrap/js/tab.js',
+                    'node_modules/bootstrap/js/affix.js',
+                    // webpack javascript file
+                    'src/_assets/js/bundle.js',
+                    // social media javascript file.
+                ],
+                dest: '<%= project.dest.js %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.js'
+            }
         },
+
         cssmin: {
             // cssmin task goes here. i.e minifising css files.
+            options: {
+                compatibility: 'ie8',
+                keepSpecialComments: '*',
+                sourceMap: true,
+                sourceMapInlineSources: true,
+                advanced: false
+            },
+            minifyCore: {
+                src: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css',
+                dest: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.min.css'
+            },
+            minifyTheme: {
+                src: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>-theme.css',
+                dest: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>-theme.min.css'
+            },
+            release: {
+                src: [
+                    // css files for final release sources
+                ],
+                dest: '<%= project.dest.css %>/russetdocs.min.css'
+            }
         },
+
         uglify: {
             // uglify task goes here. i.e minifising javascript files.
             options: {
-                mangle: false
+                compress: {
+                    warnings: false
+                },
+                mangle: true,
+                preserveComments: /^!|@preserve|@license|@cc_on/i
             },
+            core: {
+                src: '<%= project.dest.js %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.js',
+                dest: '<%= project.dest.js %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.min.js'
+            }
         },
+
         copy: {
             // copy task goes here. i.e copies files and folders.
             fonts: {
@@ -147,5 +215,5 @@ module.exports = function(grunt) {
     // Register tasks.
 
     // Default tasks.
-    grunt.registerTask( 'default', [ 'clean', 'copy', 'less:build', 'less:release' ] );
+    grunt.registerTask( 'default', [ 'clean', 'less', 'concat', 'cssmin', 'uglify', 'copy' ] );
 }
