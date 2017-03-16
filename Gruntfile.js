@@ -30,20 +30,13 @@ module.exports = function(grunt) {
 
         // Project configurations
         project: {
-            // projects assets source.
-            src: {
-                css: 'src/_assets/css',
-                js: 'src/_assets/js',
-                images: 'src/_assets/images',
-                fonts: 'src/_assets/fonts'
-            },
             // projects assets destination.
             dest: {
-                css: 'public/_assets/css',
-                js: 'public/_assets/js',
-                images: 'public/_assets/images',
-                fonts: 'public/_assets/fonts',
-                assets: 'public/_assets'
+                css: 'docs/_assets/css',
+                js: 'docs/_assets/js',
+                images: 'docs/_assets/images',
+                fonts: 'docs/_assets/fonts',
+                assets: 'docs/_assets'
             }
         },
 
@@ -85,11 +78,11 @@ module.exports = function(grunt) {
                     strictMath: true,
                     sourceMap: true,
                     outputSourceFiles: true,
-                    sourceMapURL: '<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css.map',
-                    sourceMapFilename: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css.map'
+                    sourceMapURL: 'bootstrap.css.map',
+                    sourceMapFilename: '<%= project.dest.css %>/bootstrap.css.map'
                 },
                 src: 'node_modules/bootstrap/less/bootstrap.less',
-                dest: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css'
+                dest: '<%= project.dest.css %>/bootstrap.css'
             },
             /**** Compile time error. resolve it later.
             compileTheme: {
@@ -104,15 +97,6 @@ module.exports = function(grunt) {
                 dest: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>-theme.css'
             },
             */
-            release: {
-                src: ['<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css'],
-                dest: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css',
-                options: {
-                    banner: '<%= meta.banner %>',
-                    cleancss: true,
-                    compress: true
-                }
-            }
         },
 
         concat: {
@@ -121,7 +105,7 @@ module.exports = function(grunt) {
                 banner: '<%= meta.banner %>\n<%= jqueryCheck %>\n<%= jqueryVersionCheck %>',
                 stripBanners: false
             },
-            build: {
+            bootstrap: {
                 src: [
                     // bootstrap javascript source files.
                     'node_modules/bootstrap/js/transition.js',
@@ -135,10 +119,27 @@ module.exports = function(grunt) {
                     'node_modules/bootstrap/js/popover.js',
                     'node_modules/bootstrap/js/scrollspy.js',
                     'node_modules/bootstrap/js/tab.js',
-                    'node_modules/bootstrap/js/affix.js',
-                    // webpack javascript file
-                    'src/_assets/js/bundle.js',
-                    // social media javascript file.
+                    'node_modules/bootstrap/js/affix.js'
+                ],
+                dest: '<%= project.dest.js %>/bootstrap.js'
+            },
+            webpack: {
+                src: 'src/webpack/js/bundle.js',
+                dest: '<%= project.dest.js %>/russetwebpack.js'
+            },
+            social: {
+                src: [
+                    'src/_assets/js/facebook.js',
+                    'src/_assets/js/twitter.js',
+                    'src/_assets/js/linkedin.js',
+                ],
+                dest: '<%= project.dest.js %>/social.js'
+            },
+            release: {
+                src: [
+                    '<%= project.dest.js %>/bootstrap.js',
+                    '<%= project.dest.js %>/russetwebpack.js',
+                    '<%= project.dest.js %>/social.js'
                 ],
                 dest: '<%= project.dest.js %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.js'
             }
@@ -154,13 +155,15 @@ module.exports = function(grunt) {
                 advanced: false
             },
             minifyCore: {
-                src: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.css',
-                dest: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>.min.css'
+                src: '<%= project.dest.css %>/bootstrap.css',
+                dest: '<%= project.dest.css %>/bootstrap.min.css'
             },
+            /*
             minifyTheme: {
                 src: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>-theme.css',
                 dest: '<%= project.dest.css %>/<%= jekyllConfig.github_username %>-<%= jekyllConfig.version %>-theme.min.css'
             },
+            */
             release: {
                 src: [
                     // css files for final release sources
@@ -192,13 +195,13 @@ module.exports = function(grunt) {
                     {expand: true, cwd: 'node_modules/font-awesome', src: ['fonts/*'], dest: '<%= project.dest.assets %>/'},
 
                     // include files from src
-                    {expand: true, cwd: '<%= project.src.fonts %>', src: ['**'], dest: '<%= project.dest.fonts %>/'},
+                    {expand: true, cwd: 'node_modules/bootstrap/fonts', src: ['**'], dest: '<%= project.dest.fonts %>/'},
                 ],
             },
             images: {
                 files: [
                     // copy images.
-                    {expand: true, cwd: '<%= project.src.images %>', src:['**/*'], dest: '<%= project.dest.images %>/'}
+                    {expand: true, cwd: 'src/_assets/images', src:['**/*'], dest: '<%= project.dest.images %>/'}
                 ],
             },
         },
