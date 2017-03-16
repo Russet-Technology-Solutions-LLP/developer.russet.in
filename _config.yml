@@ -1,57 +1,21 @@
-# your informations
-author:
-  name: Sandeep Sihari
-  description:
-  picture: /_assets/images/avatar.jpg
-  favicon: /_assets/images/favicon.png
+# Dependencies
+markdown:         kramdown
+highlighter:      rouge
 
 # Permalinks
-permalink: pretty
+permalink:        pretty
 
-# site description
-description: Developer portal of Russet Technology Solutions LLP.
+# Server
+source:           docs
+destination:      public
+url:              http://developer.russet.in
+encoding:         UTF-8
 
-# site url
-url: http://developer.russet.in
-
-# site title
-title: Russet
+gems:
+  - jekyll-sitemap
 
 # site version
 version: 1.0.0
 
-# number of posts per page
-paginate: 10
-
 # your github username
 github_username: russetechsol
-
-# set true to include or false to exclude share option
-share:
-  twitter: true
-  facebook: true
-  google_plus: true
-  linkedin: true
-  disqus: true
-
-source: docs
-destination: public
-  
-# if share.facebook is true, provide your facebook app id
-facebook_app_id: 1139759226152493
-
-# if share.disqus is true, provide your disqus shortname, the api key and the number of comments to display
-disqus_username: russetechsol
-# disqus_api_key: o2szu05bLNqiXiRvqe2oFvIHYYVR24eVkQiGs5WHcj0VUnvF8GCqD9HQUZErwCe7
-# disqus_recent_comments_to_display: 5
-
-# google analytics ID
-# google_analytics_id: UA-58186085-1
-
-markdown: kramdown
-highlighter: rouge
-#exclude: [ 'README.md', 'src/', 'node_modules/', 'package.json', 'Gruntfile.js' ]
-excerpt_separator: <!--excerpt_separator-->
-
-# Gems
-gems: [jekyll-paginate]

@@ -32,11 +32,11 @@ module.exports = function(grunt) {
         project: {
             // projects assets destination.
             dest: {
-                css: 'docs/_assets/css',
-                js: 'docs/_assets/js',
-                images: 'docs/_assets/images',
-                fonts: 'docs/_assets/fonts',
-                assets: 'docs/_assets'
+                css: 'docs/assets/css',
+                js: 'docs/assets/js',
+                images: 'docs/assets/images',
+                fonts: 'docs/assets/fonts',
+                assets: 'docs/assets'
             }
         },
 
@@ -129,9 +129,9 @@ module.exports = function(grunt) {
             },
             social: {
                 src: [
-                    'src/_assets/js/facebook.js',
-                    'src/_assets/js/twitter.js',
-                    'src/_assets/js/linkedin.js',
+                    'src/assets/js/facebook.js',
+                    'src/assets/js/twitter.js',
+                    'src/assets/js/linkedin.js',
                 ],
                 dest: '<%= project.dest.js %>/social.js'
             },
@@ -201,7 +201,7 @@ module.exports = function(grunt) {
             images: {
                 files: [
                     // copy images.
-                    {expand: true, cwd: 'src/_assets/images', src:['**/*'], dest: '<%= project.dest.images %>/'}
+                    {expand: true, cwd: 'src/assets/images', src:['**/*'], dest: '<%= project.dest.images %>/'}
                 ],
             },
         },
